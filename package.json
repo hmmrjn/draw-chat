@@ -13,5 +13,8 @@
     "p5.js"
   ],
   "author": "Jun Hamamura",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }

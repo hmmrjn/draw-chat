@@ -1,0 +1,17 @@
+{
+  "name": "hello-websocket-p5",
+  "version": "1.0.0",
+  "description": "collaboration sketch made with node.js + socket.io + p5.js",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "socket.io",
+    "WebSockets",
+    "p5.js"
+  ],
+  "author": "Jun Hamamura",
+  "license": "ISC"
+}

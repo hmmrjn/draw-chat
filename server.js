@@ -12,4 +12,11 @@ var io = socket(server)
 io.sockets.on('connection', newConnection)
 function newConnection(socket){
     console.log('new connection: ' + socket.id)
+    socket.on('mouse', (data) => {
+        //send back to other clients excluding the emitter
+        socket.broadcast.emit('mouse', data)
+        //we can send to everyone incudng the emitter too
+        //io.sockets.emit('mouse', data)
+        console.log(data)
+    })
 }

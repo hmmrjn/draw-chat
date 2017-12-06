@@ -1,10 +1,10 @@
 <html>
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.js"></script>
-  <script src="sketch.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <title>Socket.IO chat</title>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Socket.IO chat</title>
   <style>
     * {
       margin: 0;
@@ -45,10 +45,8 @@
     #messages {
       width: 400px;
       height: 600px;
-      background: green;
-      position: absolute;
-      top: 0;
-      right: 0;
+      background: aquamarine;
+      float:left;
       list-style-type: none;
       margin: 0;
       padding: 0;
@@ -70,22 +68,8 @@
     <input id="m" autocomplete="off" />
     <button>Send</button>
   </form>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-  <script>
-    $(function () {
-      var socket = io();
-      $('form').submit(function () {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-      });
-      socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg.id + " : " + msg.msg));
-      });
-    });
-  </script>
-
+  
 </body>
 
 </html>
+<script src="sketch.js"></script>

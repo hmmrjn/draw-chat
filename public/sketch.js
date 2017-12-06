@@ -6,9 +6,10 @@ var otherCientsTraces = []
 var anotherClientMouseData
 
 function setup() {
-    createCanvas(400, windowHeight*0.9)
+    createCanvas(400, windowHeight * 0.9)
     socket = io()
     socket.on('mouse', receiveOtherClientsMouseData) //receive
+    updateTextChat()
 }
 
 function mouseMoved() {
@@ -17,29 +18,29 @@ function mouseMoved() {
 
 function mouseDragged() {
     fill(255)
-    ownTraces.push({x: mouseX, y: mouseY})
+    ownTraces.push({ x: mouseX, y: mouseY })
     sendOwnMouseData()
 }
 
-function draw () {
+function draw() {
     background(255)
 
-    if(socket.id != null){
+    if (socket.id != null) {
         fill(0)
-        text(socket.id, mouseX, mouseY-10)
+        text(socket.id, mouseX, mouseY - 10)
     }
 
 
-    for(trace of ownTraces) {
+    for (trace of ownTraces) {
         ellipse(trace.x, trace.y, 20, 20)
     }
 
     fill(0, 0, 255)
-    for(trace of otherCientsTraces) {
+    for (trace of otherCientsTraces) {
         ellipse(trace.x, trace.y, 20, 20)
     }
 
-    if(anotherClientMouseData != null){
+    if (anotherClientMouseData != null) {
         fill(0, 0, 255)
         text(anotherClientMouseData.id, anotherClientMouseData.x, anotherClientMouseData.y)
     }
@@ -47,8 +48,8 @@ function draw () {
 
 function receiveOtherClientsMouseData(data) {
     console.log(data)
-    if(data.pressed){
-        otherCientsTraces.push({x: data.x, y: data.y})
+    if (data.pressed) {
+        otherCientsTraces.push({ x: data.x, y: data.y })
     }
     anotherClientMouseData = data
 }
@@ -57,3 +58,29 @@ function sendOwnMouseData() {
     var data = { x: Math.round(mouseX), y: Math.round(mouseY), pressed: mouseIsPressed }
     socket.emit('mouse', data) //send
 }
+
+
+// chat below
+
+function updateTextChat() {
+    $('form').submit(function () {
+        console.log("formとどいた！！")
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+    });
+    socket.on('chat message', function (msg) {
+        $('#messages').append($('<li>').text(msg.id + " : " + msg.msg));
+    });
+}
+   
+
+
+
+// $('#messages').click(function(){
+//     console.log("トリガー！！aaaa")
+// })
+// $('form').submit(function () {
+//     console.log("formとどいた！！")
+//     return false;
+// })

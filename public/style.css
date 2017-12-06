@@ -1,0 +1,72 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font: 13px Helvetica, Arial;
+    background: whitesmoke;
+    display: flex;
+    flex-direction: row;
+  }
+
+  main {
+    background: mediumaquamarine;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center; /* horizontally */
+    align-items: center; /* vertically */
+  }
+
+  #sketch-holder {
+    box-shadow: 0 0 10px rgba(0, 0, 0, .6);
+  }
+
+  aside {
+    width: 340px;
+    height: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .6);
+    display: flex;
+    flex-direction: column;
+  }
+
+  form {
+    padding: 3px;
+    width: 340px;
+  }
+
+  form input {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    height: 36px;
+    width: 78%;
+    margin-right: .5%;
+  }
+
+  form button {
+    height: 36px;
+    width: 20%;
+    color: white;
+    background: mediumaquamarine;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  #messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+
+  #messages li {
+    padding: 5px 10px;
+  }
+
+  #messages li:nth-child(odd) {
+    background: rgba(0, 0, 0, .1);
+  }

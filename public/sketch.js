@@ -6,7 +6,8 @@ var otherCientsTraces = []
 var anotherClientMouseData
 
 function setup() {
-    createCanvas(400, windowHeight * 0.9)
+    var canvas = createCanvas(800, 600)
+    canvas.parent('sketch-holder')
     socket = io()
     socket.on('mouse', receiveOtherClientsMouseData) //receive
     updateTextChat()
@@ -59,12 +60,8 @@ function sendOwnMouseData() {
     socket.emit('mouse', data) //send
 }
 
-
-// chat below
-
 function updateTextChat() {
     $('form').submit(function () {
-        console.log("formとどいた！！")
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
@@ -73,14 +70,3 @@ function updateTextChat() {
         $('#messages').append($('<li>').text(msg.id + " : " + msg.msg));
     });
 }
-   
-
-
-
-// $('#messages').click(function(){
-//     console.log("トリガー！！aaaa")
-// })
-// $('form').submit(function () {
-//     console.log("formとどいた！！")
-//     return false;
-// })

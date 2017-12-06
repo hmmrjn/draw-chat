@@ -10,7 +10,8 @@ console.log("server running")
 
 var socket = require('socket.io')
 var io = socket(server)
-io.sockets.on('connection', newConnection)
+io.on('connection', newConnection)
+
 function newConnection(socket){
     console.log('new connection: ' + socket.id)
     socket.on('mouse', (data) => {
@@ -20,5 +21,9 @@ function newConnection(socket){
         //we can send to everyone incudng the emitter too
         //io.sockets.emit('mouse', data)
         // console.log(socket.id + " { x:" + data.x + " y:" + data.y + " pressed:" + data.pressed + "}")
-    })
+    })    
+    socket.on('chat message', (msg) => {
+        console.log('message:' + msg);
+        io.emit('chat message', {id : socket.id, msg : msg});
+    });
 }

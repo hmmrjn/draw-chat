@@ -6,7 +6,7 @@ var otherCientsTraces = []
 var anotherClientMouseData
 
 function setup() {
-    createCanvas(windowWidth*0.9, windowHeight*0.9)
+    createCanvas(400, windowHeight*0.9)
     socket = io()
     socket.on('mouse', receiveOtherClientsMouseData) //receive
 }

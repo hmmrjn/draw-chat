@@ -1,7 +1,7 @@
 var socket
 
 var ownTraces = []
-var otherCientsTraces = []
+var otherClientsTraces = []
 
 var anotherClientMouseData
 
@@ -45,7 +45,7 @@ function draw() {
     }
 
     fill(0, 0, 255)
-    for (trace of otherCientsTraces) {
+    for (trace of otherClientsTraces) {
         ellipse(trace.x, trace.y, 10, 10)
     }
 
@@ -81,7 +81,7 @@ class Trace {
 function receiveOtherClientsMouseData(data) {
     console.log(data)
     if (data.pressed) {
-        otherCientsTraces.push({ x: data.x, y: data.y })
+        otherClientsTraces.push({ x: data.x, y: data.y })
     }
     anotherClientMouseData = data
 }

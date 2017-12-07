@@ -8,6 +8,7 @@ var anotherClientMouseData
 function setup() {
     var canvas = createCanvas(800, 600)
     canvas.parent('sketch-holder')
+    frameRate(20)
     socket = io()
     socket.on('mouse', receiveOtherClientsMouseData) //receive
     updateTextChat()

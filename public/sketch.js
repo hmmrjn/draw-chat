@@ -63,11 +63,11 @@ function sendOwnMouseData() {
 
 function updateTextChat() {
     $('form').submit(function () {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    });
+        socket.emit('chat message', $('#m').val())
+        $('#m').val('')
+        return false
+    })
     socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg.id + " : " + msg.msg));
-    });
+        $('#messages').append($('<li>').text(msg.id + " : " + msg.msg))
+    })
 }

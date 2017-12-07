@@ -23,7 +23,7 @@ function newConnection(socket){
         // console.log(socket.id + " { x:" + data.x + " y:" + data.y + " pressed:" + data.pressed + "}")
     })    
     socket.on('chat message', (msg) => {
-        console.log('message:' + msg);
-        io.emit('chat message', {id : socket.id, msg : msg});
-    });
+        console.log('message:' + msg)
+        io.emit('chat message', {id : socket.id, msg : msg})
+    })
 }

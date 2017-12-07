@@ -14,14 +14,26 @@ io.on('connection', newConnection)
 
 function newConnection(socket){
     console.log('new connection: ' + socket.id)
-    socket.on('mouse', (data) => {
-        //send back to other clients excluding the emitter
+    socket.broadcast.emit('new participant', socket.id)
+
+    socket.on('mouse moved', (data) => {
         data.id = socket.id
-        socket.broadcast.emit('mouse', data)
-        //we can send to everyone incudng the emitter too
-        //io.sockets.emit('mouse', data)
-        // console.log(socket.id + " { x:" + data.x + " y:" + data.y + " pressed:" + data.pressed + "}")
-    })    
+        //send back to other clients excluding the emitter
+        socket.broadcast.emit('mouse moved', data)
+    })
+
+    socket.on('mouse pressed', (data) => {
+        data.id = socket.id
+        //send back to other clients excluding the emitter
+        socket.broadcast.emit('mouse pressed', data)
+    })
+
+    socket.on('mouse dragged', (data) => {
+        data.id = socket.id
+        //send back to other clients excluding the emitter
+        socket.broadcast.emit('mouse dragged', data)
+    })
+
     socket.on('chat message', (msg) => {
         console.log('message:' + msg)
         io.emit('chat message', {id : socket.id, msg : msg})

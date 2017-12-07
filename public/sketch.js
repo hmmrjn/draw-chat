@@ -1,40 +1,52 @@
 var socket
 
 var ownTraces = []
-var otherClientsTraces = []
 
+//TODO
 var anotherClientMouseData
+
+var participants = []
 
 function setup() {
     var canvas = createCanvas(800, 600)
     canvas.parent('sketch-holder')
     frameRate(20)
     socket = io()
-    socket.on('mouse', receiveOtherClientsMouseData) //receive
+    socket.on('mouse moved', receiveMouseMovedData)
+    socket.on('mouse pressed', receiveMousePressedData)
+    socket.on('mouse dragged', receiveMouseDraggedData)
+    socket.on('new participant', addNewParticipant)
     updateTextChat()
 }
 
 function mouseMoved() {
-    sendOwnMouseData()
+    sendMouseMovedData()
 }
 
 //once when begun to press
 function mousePressed() {
     ownTraces.push(new Trace())
+    sendMousePressedData()
 }
 
 //moved while pressed
 function mouseDragged() {
     var newestOwnTrace = ownTraces[ownTraces.length - 1]
     newestOwnTrace.points.push(new Point(mouseX, mouseY))
-    sendOwnMouseData()
+    sendMouseDraggedData()
 }
 
 function draw() {
     background(255)
 
-    for (trace of ownTraces) {
+    for (let trace of ownTraces) {
         trace.show()
+    }
+
+    for (let pa of participants) {
+        for(let trace of pa.traces){
+            trace.show()
+        }
     }
 
     noStroke()
@@ -42,11 +54,6 @@ function draw() {
     if (socket.id != null) {
         fill(0)
         text(socket.id, mouseX, mouseY - 10)
-    }
-
-    fill(0, 0, 255)
-    for (trace of otherClientsTraces) {
-        ellipse(trace.x, trace.y, 10, 10)
     }
 
     if (anotherClientMouseData != null) {
@@ -78,18 +85,62 @@ class Trace {
     }
 }
 
-function receiveOtherClientsMouseData(data) {
-    console.log(data)
-    if (data.pressed) {
-        otherClientsTraces.push({ x: data.x, y: data.y })
+class Participant {
+    constructor(socketId){
+        this.socketId = socketId
+        this.traces = []
     }
+}
+
+function addNewParticipant(socketId) {
+    console.log("joined: " + socketId)
+    participants.push(new Participant(socketId))
+    console.log(participants.length)
+}
+
+function sendMouseMovedData() {
+    var data = { x: Math.round(mouseX), y: Math.round(mouseY) }
+    socket.emit('mouse moved', data)
+}
+
+function sendMousePressedData() {
+    var data = { x: Math.round(mouseX), y: Math.round(mouseY) }
+    socket.emit('mouse pressed', data)
+}
+
+function sendMouseDraggedData() {
+    var data = { x: Math.round(mouseX), y: Math.round(mouseY) }
+    socket.emit('mouse dragged', data)
+}
+
+function receiveMouseMovedData(data) {
+    //TODO
     anotherClientMouseData = data
 }
 
-function sendOwnMouseData() {
-    var data = { x: Math.round(mouseX), y: Math.round(mouseY), pressed: mouseIsPressed }
-    socket.emit('mouse', data) //send
+function receiveMousePressedData(data) {
+    let participant = getParticipantBySocketId(data.id)
+    participant.traces.push(new Trace())
 }
+
+function receiveMouseDraggedData(data) {
+    let participant = getParticipantBySocketId(data.id)
+    let participantNewestTrace = participant.traces[participant.traces.length - 1]
+    participantNewestTrace.points.push(new Point(data.x, data.y))
+}
+
+//TODO
+function getParticipantBySocketId(socketId) {
+    for(let participant of participants){
+        if(participant.socketId == socketId){
+            return participant
+        }
+    }
+}
+
+//
+// chat below
+//
 
 function updateTextChat() {
     $('form').submit(function () {

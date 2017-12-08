@@ -16,11 +16,11 @@ io.on('connection', newConnection)
 
 function newConnection(socket){
     console.log('new connection: ' + socket.id)
-    participantSocketIds.push(socket.id)
     socket.broadcast.emit('new participant', socket.id)
-    console.log(participantSocketIds)
     // send back only to the emitter
     io.to(socket.id).emit('former participant ids', participantSocketIds)
+    participantSocketIds.push(socket.id)
+    console.log(participantSocketIds)
 
     socket.on('mouse moved', (data) => {
         data.id = socket.id

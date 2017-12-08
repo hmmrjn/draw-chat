@@ -1,10 +1,6 @@
 var socket
 
-var ownTraces = []
-
-//TODO
-var anotherClientMouseData
-
+var selfParticipant
 var participants = []
 
 function setup() {
@@ -18,49 +14,36 @@ function setup() {
     socket.on('mouse dragged', receiveMouseDraggedData)
     socket.on('new participant', addNewParticipant)
     updateTextChat()
+    selfParticipant = new Participant("me")
 }
 
 function mouseMoved() {
     sendMouseMovedData()
+    selfParticipant.updateMousePosition(mouseX, mouseY)
 }
 
 //once when begun to press
 function mousePressed() {
-    ownTraces.push(new Trace())
+    selfParticipant.traces.push(new Trace())
     sendMousePressedData()
 }
 
 //moved while pressed
 function mouseDragged() {
-    var newestOwnTrace = ownTraces[ownTraces.length - 1]
-    newestOwnTrace.points.push(new Point(mouseX, mouseY))
+    selfParticipant.addPointToLastTrace(mouseX, mouseY)
+    selfParticipant.updateMousePosition(mouseX, mouseY)
     sendMouseDraggedData()
 }
 
 function draw() {
     background(255)
 
-    for (let trace of ownTraces) {
-        trace.show()
-    }
-
     for (let pa of participants) {
-        for(let trace of pa.traces){
-            trace.show()
-        }
+        pa.showTraces()
+        pa.showMousePositionPoint()
     }
-
-    noStroke()
-
-    if (socket.id != null) {
-        fill(0)
-        text(socket.id, mouseX, mouseY - 10)
-    }
-
-    if (anotherClientMouseData != null) {
-        fill(0, 0, 255)
-        text(anotherClientMouseData.id, anotherClientMouseData.x, anotherClientMouseData.y)
-    }
+    selfParticipant.showTraces()
+    selfParticipant.showMousePositionPoint()
 }
 
 
@@ -90,6 +73,27 @@ class Participant {
     constructor(socketId){
         this.socketId = socketId
         this.traces = []
+        this.mousePositionPoint = new Point(0, 0)
+    }
+    addPointToLastTrace(x, y) {
+        let newestOwnTrace = this.traces[this.traces.length - 1]
+        newestOwnTrace.points.push(new Point(x, y))
+    }
+    showTraces() {
+        for(let trace of this.traces){
+            trace.show()
+        }
+    }
+    updateMousePosition(x, y) {
+        this.mousePositionPoint = new Point(x, y)
+    }
+    showMousePositionPoint() {
+        noStroke()
+        let pos = this.mousePositionPoint
+        fill(255, 100, 0)
+        rect(pos.x, pos.y - 30, textWidth(this.socketId) + 12, 20, 2)
+        fill(255)
+        text(this.socketId, pos.x + 6, pos.y -30 + 14)
     }
 }
 
@@ -122,8 +126,7 @@ function receiveFormerParticipantIds(formerParticipantSocketIds) {
 }
 
 function receiveMouseMovedData(data) {
-    //TODO
-    anotherClientMouseData = data
+    getParticipantBySocketId(data.id).updateMousePosition(data.x, data.y)
 }
 
 function receiveMousePressedData(data) {
@@ -135,6 +138,7 @@ function receiveMouseDraggedData(data) {
     let participant = getParticipantBySocketId(data.id)
     let participantNewestTrace = participant.traces[participant.traces.length - 1]
     participantNewestTrace.points.push(new Point(data.x, data.y))
+    getParticipantBySocketId(data.id).updateMousePosition(data.x, data.y)
 }
 
 //TODO

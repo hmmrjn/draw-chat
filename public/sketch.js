@@ -12,6 +12,7 @@ function setup() {
     canvas.parent('sketch-holder')
     frameRate(20)
     socket = io()
+    socket.on('former participant ids', receiveFormerParticipantIds)
     socket.on('mouse moved', receiveMouseMovedData)
     socket.on('mouse pressed', receiveMousePressedData)
     socket.on('mouse dragged', receiveMouseDraggedData)
@@ -111,6 +112,13 @@ function sendMousePressedData() {
 function sendMouseDraggedData() {
     var data = { x: Math.round(mouseX), y: Math.round(mouseY) }
     socket.emit('mouse dragged', data)
+}
+
+function receiveFormerParticipantIds(formerParticipantSocketIds) {
+    for(let fpsi of formerParticipantSocketIds){
+        participants.push(new Participant(fpsi))
+        console.log("got former participant: " + fpsi)
+    }
 }
 
 function receiveMouseMovedData(data) {

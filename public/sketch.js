@@ -13,6 +13,7 @@ function setup() {
     socket.on('mouse pressed', receiveMousePressedData)
     socket.on('mouse dragged', receiveMouseDraggedData)
     socket.on('new participant', addNewParticipant)
+    socket.on('disconnect',disconnectedPaticipant )
     updateTextChat()
     selfParticipant = new Participant("me")
 }
@@ -101,6 +102,11 @@ function addNewParticipant(socketId) {
     console.log("joined: " + socketId)
     participants.push(new Participant(socketId))
     console.log(participants.length)
+    $('#messages').append($('<li>').text(socketId + 'さんが入室しました'))
+}
+function disconnectedPaticipant(socketId){
+  console.log("disconnected"+ socketId);
+    $('#messages').append($('<li>').text(socketId + 'さんが退出しました'))
 }
 
 function sendMouseMovedData() {

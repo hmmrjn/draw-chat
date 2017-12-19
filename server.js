@@ -49,6 +49,7 @@ function newConnection(socket){
         console.log('disconnected: ' + socket.id);
         removeValueFromArray(participantSocketIds, socket.id)
         console.log(participantSocketIds)
+        io.emit('disconnect',socket.id)
     });
 }
 

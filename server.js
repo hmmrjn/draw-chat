@@ -9,16 +9,18 @@ app.use(express.static('public'))
 console.log("server running")
 
 var participantSocketIds = []
+var counter = 0
 
 var socket = require('socket.io')
 var io = socket(server)
 io.on('connection', newConnection)
 
 function newConnection(socket){
-    console.log('new connection: ' + socket.id)
+    console.log('new connection: ' + socket.id+":"+namedParticipants(socket.id))
     socket.broadcast.emit('new participant', socket.id)
     // send back only to the emitter
     io.to(socket.id).emit('former participant ids', participantSocketIds)
+    io
     participantSocketIds.push(socket.id)
     console.log(participantSocketIds)
 
@@ -46,7 +48,7 @@ function newConnection(socket){
     })
 
     socket.on('disconnect', function() {
-        console.log('disconnected: ' + socket.id);
+        console.log('disconnected: ' + socket.id+":"+namedParticipants(socket.id));
         removeValueFromArray(participantSocketIds, socket.id)
         console.log(participantSocketIds)
         io.emit('disconnect',socket.id)
@@ -58,4 +60,11 @@ function removeValueFromArray(arr, val) {
     if (index >= 0) {
         arr.splice( index, 1 )
     }
+}
+function namedParticipants(id){
+  var token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら"]
+  // var num = Math.floor(Math.random() * token.length)
+  name = token[counter]
+  counter++
+  return name
 }

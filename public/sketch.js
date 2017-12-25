@@ -107,9 +107,9 @@ function addNewParticipant(socketIdAndName) {
     $('#messages').append($('<li>').text(socketIdAndName.name + 'さんが入室しました'))
 }
 //TODO
-function disconnectedPaticipant(socketId){
-  console.log("disconnected"+ socketId);
-    $('#messages').append($('<li>').text(socketId + 'さんが退出しました'))
+function disconnectedPaticipant(name){
+  console.log("disconnected"+ name);
+    $('#messages').append($('<li>').text(name + 'さんが退出しました'))
 }
 
 function sendMouseMovedData() {

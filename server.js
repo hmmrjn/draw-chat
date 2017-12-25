@@ -51,21 +51,30 @@ function newConnection(socket){
     })
 
     socket.on('disconnect', function() {
-        console.log('disconnected: ' + socket.id+":"+socket.id);
-        //TODO
-        removeValueFromArray(participantSocketIdsAndNames, socket.id)
+        console.log('disconnected: ' + socket.id+":"+getParticipantNameBySocketId(socket.id));
+        io.emit('disconnect', getParticipantNameBySocketId(socket.id))
+        removeParticipantBySocketId(socket.id)
         console.log(participantSocketIdsAndNames)
-        io.emit('disconnect',socket.id)
     });
 }
 
-//TODO
-function removeValueFromArray(arr, val) {
-    var index = arr.indexOf(val)
-    if (index >= 0) {
-        arr.splice( index, 1 )
+
+function removeParticipantBySocketId(socketId) {
+  for (let index in participantSocketIdsAndNames) {
+    if (participantSocketIdsAndNames[index].socketId == socketId) {
+      participantSocketIdsAndNames.splice(index,1)
     }
+  }
 }
+
+function getParticipantNameBySocketId(socketId) {
+  for (let psin of participantSocketIdsAndNames) {
+    if (psin.socketId == socketId) {
+      return psin.name
+    }
+  }
+}
+
 function generateName(){
   var token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら","ぞう","くま","ぱんだ","へび","ひと","サーバルキャット","かばんちゃん","つちのこ","すなねこ","かば","とき"]
   if (participantSocketIdsAndNames.length >= token.length) {
@@ -76,7 +85,6 @@ function generateName(){
         var temp = token[num]
         var isUnique = true
         for(let psin of participantSocketIdsAndNames){
-          console.log(psin.name);
           if (temp==psin.name) {
             isUnique =false
             break
@@ -85,6 +93,5 @@ function generateName(){
           }
         }
       }while (!isUnique)
-  console.log("結果:"+temp);
   return temp
 }

@@ -14,9 +14,9 @@ function setup() {
     socket.on('mouse dragged', receiveMouseDraggedData)
     socket.on('new participant', addNewParticipant)
     socket.on('disconnect',disconnectedPaticipant )
+    selfParticipant = new Participant("dummy","dummyname")
+    socket.on('assign name',receiveSelfName)
     updateTextChat()
-    //TODO
-    selfParticipant = new Participant("me","myname")
 }
 
 function mouseMoved() {
@@ -104,12 +104,12 @@ function addNewParticipant(socketIdAndName) {
     console.log("joined: " + socketIdAndName.socketId)
     participants.push(new Participant(socketIdAndName.socketId,socketIdAndName.name))
     console.log(participants.length)
-    $('#messages').append($('<li>').text(socketIdAndName.name + 'さんが入室しました'))
+    $('#messages').append($('<li>').text(socketIdAndName.name + 'が入室しました'))
 }
-//TODO
+
 function disconnectedPaticipant(name){
   console.log("disconnected"+ name);
-    $('#messages').append($('<li>').text(name + 'さんが退出しました'))
+    $('#messages').append($('<li>').text(name + 'が退出しました'))
 }
 
 function sendMouseMovedData() {
@@ -134,6 +134,10 @@ function receiveFormerParticipantIds(formerParticipantSocketIdsAndNames) {
     }
 }
 
+function receiveSelfName(name){
+  selfParticipant.name=name
+}
+
 function receiveMouseMovedData(data) {
     getParticipantBySocketId(data.id).updateMousePosition(data.x, data.y)
 }
@@ -150,7 +154,6 @@ function receiveMouseDraggedData(data) {
     getParticipantBySocketId(data.id).updateMousePosition(data.x, data.y)
 }
 
-//TODO
 function getParticipantBySocketId(socketId) {
     for(let participant of participants){
         if(participant.socketId == socketId){
@@ -162,18 +165,6 @@ function getParticipantBySocketId(socketId) {
 //
 // chat below
 //
-
-// function namedParticipants(socketId){
-//   let token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら"]
-//    let num = Math.floor(Math.random() * token.length)
-//   if (socketId.num.equals(num)) {
-//     num = Math.floor(Math.random() * token.length)
-//   }
-//   name = token[num]
-//   //counter++
-//   return name
-// }
-
 function updateTextChat() {
     $('form').submit(function () {
         socket.emit('chat message', $('#m').val())
@@ -181,6 +172,6 @@ function updateTextChat() {
         return false
     })
     socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg.id + " : " + msg.msg))
+        $('#messages').append($('<li>').text(msg.name + " : " + msg.msg))
     })
 }

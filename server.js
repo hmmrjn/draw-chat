@@ -22,6 +22,7 @@ function newConnection(socket){
     socket.broadcast.emit('new participant', {socketId:socket.id, name:newname})
     // send back only to the emitter
     io.to(socket.id).emit('former participant ids',  participantSocketIdsAndNames)
+    io.to(socket.id).emit('assign name', newname)
     //participantSocketIds.push(socket.id)
     participantSocketIdsAndNames.push({socketId:socket.id, name:newname})
     //participantSocketIdAndNames.name  = generateName()
@@ -47,7 +48,7 @@ function newConnection(socket){
 
     socket.on('chat message', (msg) => {
         console.log('message:' + msg)
-        io.emit('chat message', {id : socket.id, msg : msg})
+        io.emit('chat message', {name : getParticipantNameBySocketId(socket.id), msg : msg})
     })
 
     socket.on('disconnect', function() {

@@ -15,6 +15,7 @@ function setup() {
     socket.on('new participant', addNewParticipant)
     socket.on('disconnect',disconnectedPaticipant )
     updateTextChat()
+    //TODO
     selfParticipant = new Participant("me","myname")
 }
 

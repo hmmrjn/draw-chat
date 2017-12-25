@@ -18,13 +18,13 @@ io.on('connection', newConnection)
 
 function newConnection(socket){
     console.log('new connection: ' + socket.id+":"+socket.id)
-    var newname = namedParticipants()
+    var newname = generateName()
     socket.broadcast.emit('new participant', {socketId:socket.id, name:newname})
     // send back only to the emitter
     io.to(socket.id).emit('former participant ids',  participantSocketIdsAndNames)
     //participantSocketIds.push(socket.id)
     participantSocketIdsAndNames.push({socketId:socket.id, name:newname})
-    //participantSocketIdAndNames.name = namedParticipants()
+    //participantSocketIdAndNames.name  = generateName()
     console.log(participantSocketIdsAndNames)
 
     socket.on('mouse moved', (data) => {
@@ -66,16 +66,25 @@ function removeValueFromArray(arr, val) {
         arr.splice( index, 1 )
     }
 }
-function namedParticipants(){
-  // var token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら"]
-  //  for (var i = 0; i < token.length; i++) {
-  //    if (participantSocketIds.indexOf(token[i])== -1) {
-  //      name = token[i]
-  //      break
-  //    }
-  //  }
-  // name = token[counter]
-  // //counter++
-  name ="animal" + Math.floor(Math.random()*100)
-  return name
+function generateName(){
+  var token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら","ぞう","くま","ぱんだ","へび","ひと","サーバルキャット","かばんちゃん","つちのこ","すなねこ","かば","とき"]
+  if (participantSocketIdsAndNames.length >= token.length) {
+    return "oosugi---"
+  }
+      do{
+        var num =Math.floor(Math.random()*token.length)
+        var temp = token[num]
+        var isUnique = true
+        for(let psin of participantSocketIdsAndNames){
+          console.log(psin.name);
+          if (temp==psin.name) {
+            isUnique =false
+            break
+          }else {
+            isUnique =true
+          }
+        }
+      }while (!isUnique)
+  console.log("結果:"+temp);
+  return temp
 }

@@ -15,7 +15,7 @@ function setup() {
     socket.on('new participant', addNewParticipant)
     socket.on('disconnect',disconnectedPaticipant )
     updateTextChat()
-    selfParticipant = new Participant("me")
+    selfParticipant = new Participant("me","myname")
 }
 
 function mouseMoved() {
@@ -71,8 +71,9 @@ class Trace {
 }
 
 class Participant {
-    constructor(socketId){
+    constructor(socketId, name){
         this.socketId = socketId
+        this.name = name
         this.traces = []
         this.mousePositionPoint = new Point(0, 0)
     }
@@ -92,18 +93,19 @@ class Participant {
         noStroke()
         let pos = this.mousePositionPoint
         fill(255, 100, 0)
-        rect(pos.x, pos.y - 30, textWidth(this.socketId) + 12, 20, 2)
+        rect(pos.x, pos.y - 30, textWidth(this.name) + 12, 20, 2)
         fill(255)
-        text(this.socketId, pos.x + 6, pos.y -30 + 14)
+        text(this.name, pos.x + 6, pos.y -30 + 14)
     }
 }
 
-function addNewParticipant(socketId) {
-    console.log("joined: " + socketId)
-    participants.push(new Participant(socketId))
+function addNewParticipant(socketIdAndName) {
+    console.log("joined: " + socketIdAndName.socketId)
+    participants.push(new Participant(socketIdAndName.socketId,socketIdAndName.name))
     console.log(participants.length)
-    $('#messages').append($('<li>').text(socketId + 'さんが入室しました'))
+    $('#messages').append($('<li>').text(socketIdAndName.name + 'さんが入室しました'))
 }
+//TODO
 function disconnectedPaticipant(socketId){
   console.log("disconnected"+ socketId);
     $('#messages').append($('<li>').text(socketId + 'さんが退出しました'))
@@ -124,10 +126,10 @@ function sendMouseDraggedData() {
     socket.emit('mouse dragged', data)
 }
 
-function receiveFormerParticipantIds(formerParticipantSocketIds) {
-    for(let fpsi of formerParticipantSocketIds){
-        participants.push(new Participant(fpsi))
-        console.log("got former participant: " + fpsi)
+function receiveFormerParticipantIds(formerParticipantSocketIdsAndNames) {
+    for(let fpsin of formerParticipantSocketIdsAndNames){
+        participants.push(new Participant(fpsin.socketId, fpsin.name))
+        console.log("got former participant: " + fpsin)
     }
 }
 
@@ -159,6 +161,17 @@ function getParticipantBySocketId(socketId) {
 //
 // chat below
 //
+
+// function namedParticipants(socketId){
+//   let token = ["ねこ","いぬ","とり","きりん","さる","らいおん","とら"]
+//    let num = Math.floor(Math.random() * token.length)
+//   if (socketId.num.equals(num)) {
+//     num = Math.floor(Math.random() * token.length)
+//   }
+//   name = token[num]
+//   //counter++
+//   return name
+// }
 
 function updateTextChat() {
     $('form').submit(function () {

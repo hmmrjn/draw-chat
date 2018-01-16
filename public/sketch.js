@@ -172,6 +172,13 @@ function updateTextChat() {
         return false
     })
     socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg.name + " : " + msg.msg))
+        $('#messages').append($('<li class="chat-log">').text(msg.name + " : " + msg.msg))
+        //自動スクロール！
+        var tl = $('#messages')
+        if (tl[0].scrollHeight > tl[0].scrollTop + tl.outerHeight()) {
+            tl.scrollTop(tl[0].scrollHeight);
+            console.log('ｱーｯ!')
+        }
+        console.log('ンン'+tl[0].scrollHeight + ', ' + tl[0].scrollTop + ', ' + tl.outerHeight())
     })
 }

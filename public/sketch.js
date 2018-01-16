@@ -167,8 +167,10 @@ function getParticipantBySocketId(socketId) {
 //
 function updateTextChat() {
     $('form').submit(function () {
-        socket.emit('chat message', $('#m').val())
-        $('#m').val('')
+        if($('#m').val() != "" && $('#m').val() != null) {
+            socket.emit('chat message', $('#m').val())
+            $('#m').val('')
+        }
         return false
     })
     socket.on('chat message', function (msg) {
